@@ -15,6 +15,7 @@ spec:
       containers:
       - name: git-indexer
         image: ghcr.io/vino9org/git-indexer:v0.2.0
+        volumeMounts:
         - name: git-indexer-secret-volume
           mountPath: "/etc/secret-volume"
       volumes:
