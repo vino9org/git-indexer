@@ -1,0 +1,4 @@
+GITLAB_TOKEN=glpat-xxxx
+DATABASE_URL=postgresql+psycopg://192.168.999/gitdb
+PGUSER=user
+PGPASSWORD=pass

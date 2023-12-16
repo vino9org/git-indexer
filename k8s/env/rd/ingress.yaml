@@ -1,0 +1,30 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-prefix
+spec:
+  stripPrefix:
+    prefixes:
+    - /git/
+    forceSlash: false
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: git-indexer
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: default-strip-prefix@kubernetescrd
+    traefik.ingress.kubernetes.io/router.priority: "80"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /git/
+        pathType: Prefix
+        backend:
+          service:
+            name: git-indexer
+            port:
+              name: http

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ "$QUERY" = "" ];
+then
+    echo "please set QUERY"
+    exit -1
+fi
+
+if [ "$MIRROR_PATH = "" ];
+then
+    echo "please set MIRROR_PATH"
+    exit -1
+fi
+
+if [ ! -d "$MIRROR_PATH" ];
+then
+    echo "$MIRROR_PATH does not exist"
+    exit -1
+fi
+
+
+python -u -m git_indexer --mode=commits --source gitlab --query "$QUERY" --filter="*" --mirror_path $MIRROR_PATH

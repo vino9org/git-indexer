@@ -1,0 +1,11 @@
+# Ignore everything then white-list what we need
+
+**
+
+!requirements.txt
+!alembic.ini
+!entrypoint.sh
+!migrations/**
+!git_indexer/**
+!git_search/**
+!templates/**
