@@ -10,6 +10,7 @@ fi
 # automatically restart gunicorn if it crashes for whatever reason
 while true
 do
+    echo starting app
     gunicorn -w 1 git_search:app  --bind 0.0.0.0:8000
     sleep 3
 done
