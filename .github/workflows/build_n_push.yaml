@@ -51,9 +51,6 @@ jobs:
     - name: Linting
       if: success()
       run: |
-        echo ---------
-        cat .dockerignore
-        echo ---------
         flake8 --count --show-source --statistics
 
     - name: Unit tests
@@ -78,10 +75,6 @@ jobs:
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
 
-    - name: Check files
-      uses: docker/setup-qemu-action@v3
-
-
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
@@ -92,6 +85,11 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check dockerignore
+      run: |
+        cat .dockerignore
+        ls -al
 
     - name: Build and push
       if: steps.meta.outputs.tags != ''
