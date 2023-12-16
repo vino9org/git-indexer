@@ -86,15 +86,12 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Check dockerignore
-      run: |
-        cat .dockerignore
-        ls -al
-
     - name: Build and push
       if: steps.meta.outputs.tags != ''
       uses: docker/build-push-action@v5
       with:
+        # use path context so that .dockerignore will be processed.
+        context: .
         platforms: "linux/amd64,linux/arm64"
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
