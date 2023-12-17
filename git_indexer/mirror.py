@@ -1,4 +1,5 @@
 import os
+import re
 import shlex
 import subprocess
 
@@ -8,11 +9,17 @@ from .utils import clone_url2mirror_path, display_url
 
 
 def run(command: str) -> bool:
-    ret = subprocess.call(shlex.split(command))
-    if ret == 0:
+    # redact the credential part of the url before logging
+    log_cmd = re.sub(r"(?<=:\/\/).+?@", "***:***@", command)
+    logger.info(f"running '{log_cmd}' in {os.getcwd()}")
+
+    process = subprocess.run(shlex.split(command), capture_output=True, text=True)
+
+    if process.returncode == 0:
+        logger.debug(f"{process.stdout}")
         return True
     else:
-        logger.warning(f"*** returned code {ret} for {command}")
+        logger.warning(f"{command} returned code {process.returncode}. ouptput=\n{process.stdout}")
         return False
 
 

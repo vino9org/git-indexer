@@ -28,5 +28,6 @@ cdk.out
 # sqlite3 db for testing only
 *.db
 
-# misc scripts
+# misc scripts and logs
 t
+*.log

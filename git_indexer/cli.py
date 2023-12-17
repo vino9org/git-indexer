@@ -81,7 +81,6 @@ def handle_options(options: argparse.Namespace, engine: Engine) -> None:
 
     session = None
     try:
-        logger.info(f"using database engine {engine}")
         Session = sessionmaker(bind=engine)
         session = Session()
 
