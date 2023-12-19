@@ -63,13 +63,13 @@ def index_github_pull_requests(session: Session, git_repo: github_repo.Repositor
         return n_requests
 
     except GitCommandError as e:
-        print(f"{e._cmdline} returned {e.stderr} for {log_url}")
+        logger.warning(f"{e._cmdline} returned {e.stderr} for {log_url}")
     except DatabaseError as e:
         exc = traceback.format_exc()
-        print(f"DatabaseError indexing repository {log_url} => {str(e)}\n{exc}")
+        logger.warning(f"DatabaseError indexing repository {log_url} => {str(e)}\n{exc}")
     except Exception as e:  # pragma: no cover
         exc = traceback.format_exc()
-        print(f"Exception indexing repository {log_url} => {str(e)}\n{exc}")
+        logger.warning(f"Exception indexing repository {log_url} => {str(e)}\n{exc}")
 
     return 0
 
@@ -134,12 +134,12 @@ def index_gitlab_merge_requests(session: Session, project: gl_projects.Project) 
         return n_requests
 
     except GitCommandError as e:
-        print(f"{e._cmdline} returned {e.stderr} for {log_url}")
+        logger.warning(f"{e._cmdline} returned {e.stderr} for {log_url}")
     except DatabaseError as e:
         exc = traceback.format_exc()
-        print(f"DatabaseError indexing repository {log_url} => {str(e)}\n{exc}")
+        logger.warning(f"DatabaseError indexing repository {log_url} => {str(e)}\n{exc}")
     except Exception as e:  # pragma: no cover
         exc = traceback.format_exc()
-        print(f"Exception indexing repository {log_url} => {str(e)}\n{exc}")
+        logger.warning(f"Exception indexing repository {log_url} => {str(e)}\n{exc}")
 
     return 0

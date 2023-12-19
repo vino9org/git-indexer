@@ -1,9 +1,11 @@
 import os
 import re
+import sys
 import warnings
 
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request
+from loguru import logger
 from sqlalchemy.orm import joinedload, sessionmaker
 
 # from flask_sqlalchemy import SQLAlchemy
@@ -23,6 +25,9 @@ with warnings.catch_warnings():
 __MAX_ITEMS__ = 50
 __EMPTY_RESULT__ = {"commits": [], "authors": [], "repos": []}  # type: ignore
 
+logger.remove()
+logger.add(sys.stdout, level="INFO")
+
 
 def init_app() -> Flask:
     cwd = os.path.dirname(os.path.abspath(__file__))
@@ -30,9 +35,10 @@ def init_app() -> Flask:
     app = Flask(__name__, template_folder=template_folder)
     secret_key = os.environ.get("SECRET_KEY")
     app.config["SECRET_KEY"] = secret_key if secret_key else os.urandom(32)
+    app.logger = logger
 
     if os.environ.get("KUBERNETES_SERVICE_HOST"):
-        print("running in kubernetes, using proxy fix")
+        logger.info("running in kubernetes, using proxy fix")
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)  # type: ignore
 
     return app

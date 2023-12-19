@@ -6,17 +6,19 @@ then
     exit -1
 fi
 
-if [ "$MIRROR_PATH = "" ];
+if [ "$FILTER" = "" ];
 then
-    echo "please set MIRROR_PATH"
-    exit -1
+    FILTER="*"
 fi
 
-if [ ! -d "$MIRROR_PATH" ];
+if [ "$MIRROR_PATH" = "" ];
 then
-    echo "$MIRROR_PATH does not exist"
-    exit -1
+    MIRROR_PATH=/mirror
 fi
 
+if [ "$LOG_FILE" = "" ];
+then
+    LOG_FILE=git-index.log
+fi
 
-python -u -m git_indexer --mode=commits --source gitlab --query "$QUERY" --filter="*" --mirror_path $MIRROR_PATH
+python -u -m git_indexer --mode=commits --source gitlab --query "$QUERY" --filter "$FILTER" --mirror_path $MIRROR_PATH
