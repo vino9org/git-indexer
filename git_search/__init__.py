@@ -2,13 +2,12 @@ import os
 import re
 import sys
 import warnings
+from typing import Any
 
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request
 from loguru import logger
 from sqlalchemy.orm import joinedload, sessionmaker
-
-# from flask_sqlalchemy import SQLAlchemy
 from werkzeug.middleware.proxy_fix import ProxyFix
 from wtforms.fields import StringField, SubmitField
 
@@ -23,7 +22,7 @@ with warnings.catch_warnings():
     from flask_wtf import FlaskForm  # noqa: E402
 
 __MAX_ITEMS__ = 50
-__EMPTY_RESULT__ = {"commits": [], "authors": [], "repos": []}  # type: ignore
+__EMPTY_RESULT__: dict[str, list[Any]] = {"commits": [], "authors": [], "repos": []}
 
 logger.remove()
 logger.add(sys.stdout, level="INFO")
@@ -35,7 +34,7 @@ def init_app() -> Flask:
     app = Flask(__name__, template_folder=template_folder)
     secret_key = os.environ.get("SECRET_KEY")
     app.config["SECRET_KEY"] = secret_key if secret_key else os.urandom(32)
-    app.logger = logger
+    app.logger = logger  # type: ignore
 
     if os.environ.get("KUBERNETES_SERVICE_HOST"):
         logger.info("running in kubernetes, using proxy fix")
@@ -49,7 +48,7 @@ load_dotenv()
 app = init_app()
 bootstrap = Bootstrap5(app)
 
-__sql_engine__ = None  # type: ignore
+__sql_engine__ = None
 
 
 def get_session():
