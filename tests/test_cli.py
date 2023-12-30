@@ -50,8 +50,7 @@ def test_cmdline_mode_mirror(mytest_dir, sql_engine, mocker):
 
     assert m.mirror_repo.call_count == 2
     m.index_commits.assert_not_called()
-    m.index_github_pull_requests.assert_not_called()
-    m.index_gitlab_merge_requests.assert_not_called()
+    m.index_merge_requests.assert_not_called()
 
 
 def test_cmdline_mode_commits(mytest_dir, sql_engine, mocker):
@@ -64,8 +63,7 @@ def test_cmdline_mode_commits(mytest_dir, sql_engine, mocker):
 
     assert m.mirror_repo.call_count == 2
     assert m.index_commits.call_count == 2
-    m.index_github_pull_requests.assert_not_called()
-    m.index_gitlab_merge_requests.assert_not_called()
+    m.index_merge_requests.assert_not_called()
 
 
 def test_cmdline_mode_requests(mytest_dir, sql_engine, mocker):
@@ -77,8 +75,7 @@ def test_cmdline_mode_requests(mytest_dir, sql_engine, mocker):
 
     m.mirror_repo.assert_not_called()
     m.index_commits.assert_not_called()
-    m.index_github_pull_requests.assert_called_once()
-    m.index_gitlab_merge_requests.assert_called_once()
+    m.index_merge_requests.call_count == 2
 
 
 def mocks(mocker):
@@ -92,12 +89,8 @@ def mocks(mocker):
                 "git_indexer.cli.index_commits",
                 return_value=(None, 0),
             )
-            self.index_gitlab_merge_requests = mocker.patch(
-                "git_indexer.cli.index_gitlab_merge_requests",
-                return_value=1,
-            )
-            self.index_github_pull_requests = mocker.patch(
-                "git_indexer.cli.index_github_pull_requests",
+            self.index_merge_requests = mocker.patch(
+                "git_indexer.cli.index_merge_requests",
                 return_value=1,
             )
 

@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 
 from .commit_indexer import index_commits
 from .mirror import mirror_repo
-from .request_indexer import index_github_pull_requests, index_gitlab_merge_requests
+from .request_indexer import index_merge_requests
 from .utils import (
     enumberate_from_file,
     enumerate_github_repos,
@@ -100,10 +100,8 @@ def handle_options(options: argparse.Namespace, engine: Engine) -> None:
                     repo_source = "github"
 
                 if options.mode == "requests":
-                    if repo_source == "gitlab":
-                        index_gitlab_merge_requests(session, project)
-                    elif repo_source == "github":
-                        index_github_pull_requests(session, project)
+                    if repo_source in ["gitlab", "github"]:
+                        index_merge_requests(session, repo_source, project)
                     else:
                         logger.info(f"unknown repo_source: {repo_source} for {repo_url}")
 
