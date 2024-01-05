@@ -3,6 +3,7 @@ import re
 import shlex
 import subprocess
 
+import git
 from loguru import logger
 
 from .utils import clone_url2mirror_path, display_url
@@ -39,8 +40,12 @@ def mirror_repo(
     cwd = os.getcwd()
     try:
         if os.path.isdir(repo_dir) and os.path.isfile(f"{repo_dir}/HEAD"):
+            if update_remote_url(repo_dir, repo_source):
+                logger.info(f"Updated remote url for {log_url}")
+
             # mirror directory exists and seems like a legit bare git repo
             os.chdir(repo_dir)
+
             if run("git fetch --prune"):
                 logger.info(f"Updated existing repo {repo_dir} from {log_url}")
                 return repo_dir, False
@@ -89,3 +94,25 @@ def url_with_token(clone_url: str, repo_source: str) -> str:
                 full_url = clone_url.replace("://", f"://oauth2:{access_token}@")
 
     return full_url
+
+
+def update_remote_url(repo_path: str, repo_source: str) -> bool:
+    # if a remote url is http and contains an access token
+    # update if the new token is different from the one in the URL
+    repo = git.Repo(repo_path)
+    origin = repo.remotes["origin"]
+    url = origin.url
+
+    if not url.startswith("http"):
+        return False
+
+    scheme = re.match(r"https?", url).group()  # type: ignore
+    clone_url = re.sub(r"https?://[^/]+@", f"{scheme}://", url)
+    new_url = url_with_token(clone_url, repo_source)
+
+    if new_url != origin.url:
+        origin.config_writer.set("url", new_url)
+        origin.config_writer.release()
+        return True
+    else:
+        return False
