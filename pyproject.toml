@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "git-indexer"
-version = "0.2.3"
+version = "0.2.4"
 description = "Cookiecutter template for generic Python 3 project with tooling configuration for testing, linting and IDE support"
 authors = ["Li Lin <guru.lin@gmail.com>"]
 license = "MIT"
