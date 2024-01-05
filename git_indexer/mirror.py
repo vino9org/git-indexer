@@ -40,7 +40,7 @@ def mirror_repo(
     cwd = os.getcwd()
     try:
         if os.path.isdir(repo_dir) and os.path.isfile(f"{repo_dir}/HEAD"):
-            if update_remote_url(repo_dir, repo_source):
+            if is_private_repo and update_remote_url(repo_dir, repo_source):
                 logger.info(f"Updated remote url for {log_url}")
 
             # mirror directory exists and seems like a legit bare git repo
